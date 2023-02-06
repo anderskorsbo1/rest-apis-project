@@ -12,6 +12,9 @@ blp = Blueprint("Tags", "tags", description="Operations on tags")
 class TagsInStore(MethodView):
     @blp.response(200, TagSchema(many=True))
     def get(self, store_id):
+        """ Find store with tags by store ID.
+        Return store with tags based on store ID.
+        """
         store = StoreModel.query.get_or_404(store_id)
 
         return store.tags.all()
@@ -19,6 +22,9 @@ class TagsInStore(MethodView):
     @blp.arguments(TagSchema)
     @blp.response(201, TagSchema)
     def post(self, tag_data, store_id):
+        """ Create tag for store
+        Return tag in store
+        """
         tag = TagModel(**tag_data, store_id=store_id)
 
         try:
@@ -35,6 +41,9 @@ class TagsInStore(MethodView):
 class LinkTagsToItem(MethodView):
     @blp.response(201, TagSchema)
     def post(self, item_id, tag_id):
+        """ Link tags to items in store
+        Return item with a tag.
+        """
         item = ItemModel.query.get_or_404(item_id)
         tag = TagModel.query.get_or_404(tag_id)
 
@@ -49,6 +58,10 @@ class LinkTagsToItem(MethodView):
     
     @blp.response(200, TagAndItemSchema)
     def delete(self, item_id, tag_id):
+        """ Delete link between item and tag
+        return delete link based on item_id and tag_id.
+        
+        """
         item = ItemModel.query.get_or_404(item_id)
         tag = TagModel.query.get_or_404(tag_id)
 
@@ -69,6 +82,9 @@ class LinkTagsToItem(MethodView):
 class Tag(MethodView):
     @blp.response(200, TagSchema)
     def get(self, tag_id):
+        """ Find tag by ID.
+        return tag based on ID.
+        """
         tag = TagModel.query.get_or_404(tag_id)
         return tag
     
@@ -83,6 +99,9 @@ class Tag(MethodView):
         description="Returned if the tag is assigned to one or more items. In this case, the tag is not deleted."
     )
     def delete(self, tag_id):
+        """ Delete tag by ID.
+        Return delete tag based on ID.
+        """
         tag = TagModel.query.get_or_404(tag_id)
 
         if not tag.items:

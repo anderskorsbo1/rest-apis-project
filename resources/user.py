@@ -1,3 +1,5 @@
+import os
+import requests
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from passlib.hash import pbkdf2_sha256
@@ -11,10 +13,23 @@ from schemas import UserSchema
 blp = Blueprint("Users", "users", description="Operations on users")
 
 
+def send_simple_message(to, subject, body):
+    domain = os.getenv("MAILGUN_DOMAIN")
+    return requests.post(
+		f"https://api.mailgun.net/v3/{domain}/messages",
+		auth=("api", os.getenv("MAILGUN_API_KEY")),
+		data={"from": "Qvo Fred <mailgun@{domain}>",
+			"to": [to],
+			"subject": subject,
+			"text": body})
+
 @blp.route("/register")
 class UserRegister(MethodView):
     @blp.arguments(UserSchema)
     def post(self, user_data):
+        """Create user
+        return new user
+        """
         if UserModel.query.filter(UserModel.username == user_data["username"]).first():
             abort(409, message="A user with that username already exists.")
 
@@ -32,6 +47,11 @@ class UserRegister(MethodView):
 class UserLogin(MethodView):
     @blp.arguments(UserSchema)
     def post(self, user_data):
+        """Log user in
+        :param str username: The users name
+        :param str password: the users password
+        Return access_token based on validation of user.
+        """
         user = UserModel.query.filter(
             UserModel.username == user_data["username"]
         ).first()
@@ -47,6 +67,9 @@ class UserLogin(MethodView):
 class TokenRefresh(MethodView):
     @jwt_required(refresh=True)
     def post(self):
+        """ Create new validation token
+        Return new validation token.
+        """
         current_user = get_jwt_identity()
         new_token = create_access_token(identity=current_user, fresh=False)
         jti = get_jwt()["jti"]
@@ -58,19 +81,30 @@ class TokenRefresh(MethodView):
 class UserLogout(MethodView):
     @jwt_required()
     def post(self):
+        """ Logs user out
+        Return message on logout.
+        """
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)
-        return {"message": "Succelfully logged out."}
+        return {"message": "Succesfully logged out."}
 
 
 @blp.route("/user/<int:user_id>")
 class User(MethodView):
     @blp.response(200, UserSchema)
     def get(self, user_id):
+        """ Find user by ID.
+        :param int user_id: The users id.
+        Return user based on ID.
+        """
         user = UserModel.query.get_or_404(user_id)
         return user
     
     def delete(self, user_id):
+        """ Delete user by ID.
+        :param inter user_id: The users id.
+        Return delete user based on ID.        
+        """
         user = UserModel.query.get_or_404(user_id)
         db.session.delete(user)
         db.session.commit()

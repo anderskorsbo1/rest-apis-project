@@ -16,11 +16,17 @@ blp = Blueprint("stores", __name__, description="Operations on stores")
 class Store(MethodView):
     @blp.response(200, StoreSchema)
     def get(self, store_id):
+        """ Find store by ID
+        Return store based on ID.
+        """
         store = StoreModel.query.get_or_404(store_id)
         return store
 
 
     def delete(self, store_id):
+        """ Delete store by ID.
+        Return delete store based on ID.
+        """
         store = StoreModel.query.get_or_404(store_id)
         db.session.delete(store)
         db.session.commit()
@@ -30,10 +36,16 @@ class Store(MethodView):
 class Storelist(MethodView):
     @blp.response(200, StoreSchema(many=True))
     def get(self):
+        """ Find all stores
+        Return all stores in Storelist.
+        """
         return StoreModel.query.all()
     @blp.arguments(StoreSchema)
     @blp.response(200, StoreSchema)
     def post(self, store_data):
+        """ Create new store
+        Return new store
+        """
         
         store = StoreModel(**store_data)
         try:
