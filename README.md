@@ -5,28 +5,28 @@ This is a project made in relation with udemy course: REST APIs with Flask and P
 
 ## Endpoints
 ### Item
-    - endpoint: `/item`
-    - methods: `GET`, `POST`
-    - parameters: `ITEM_DATA`
-    - returns: all items if get request, new item with post request.
+- endpoint: `/item`
+- methods: `GET`, `POST`
+- parameters: `ITEM_DATA`
+- returns: all items if get request, new item with post request.
 
 ### Item by id
-    - endpoint: `/item<int:item_id>`
-    - methods: `GET`, `PUT`, `DELETE`
-    - parameters: `ITEM_ID` `ITEM_DATA` 
-    - returns: updated item, deleted item, item by id.
+- endpoint: `/item<int:item_id>`
+- methods: `GET`, `PUT`, `DELETE`
+- parameters: `ITEM_ID` `ITEM_DATA` 
+- returns: updated item, deleted item, item by id.
 
 ### Store
-    - endpoint: `/store`
-    - methods: `GET`, `POST`
-    - parameters: `store_data`
-    - returns: all stores if get request, new store with post request.
+- endpoint: `/store`
+- methods: `GET`, `POST`
+- parameters: `store_data`
+- returns: all stores if get request, new store with post request.
 
 ### Store by id
-    - endpoint: `/item/<int:store_id>`
-    - methods: `GET`, `DELETE`
-    - parameters: `store_id`
-    - returns: store by id, deleted store
+- endpoint: `/item/<int:store_id>`
+- methods: `GET`, `DELETE`
+- parameters: `store_id`
+- returns: store by id, deleted store
 
 ## Resources
 I created a folder `resources` to improve the structure by splitting items and stores into their own files.
